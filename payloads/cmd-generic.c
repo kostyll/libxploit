@@ -14,7 +14,7 @@ void cmdGenericHelp()
 
 // payload's options
 struct payloadParam cmdGenericOpts[MAX_NUM_OF_PARAMS] = {
-    { "CMD", REQUIRED, STRING, NOT_SET, NULL, NOT_SET }
+    { "CMD", REQUIRED, STRING, NULL, NOT_SET }
 };
 
 struct payload cmdGeneric = {

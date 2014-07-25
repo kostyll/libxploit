@@ -13,7 +13,7 @@ void cmdBindNcHelp()
 
 // payload's options
 struct payloadParam cmdBindNcOpts[MAX_NUM_OF_PARAMS] = {
-    { "LPORT", REQUIRED, STRING, NOT_SET, NULL, NOT_SET }
+    { "LPORT", REQUIRED, STRING, NULL, NOT_SET }
     //TODO: INTERNAL param random file name
 };
 

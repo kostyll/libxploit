@@ -14,7 +14,7 @@ void cmdBindAwkHelp()
 
 // payload's options
 struct payloadParam cmdBindAwkOpts[MAX_NUM_OF_PARAMS] = {
-    { "LPORT", REQUIRED, STRING, NOT_SET, NULL, NOT_SET }
+    { "LPORT", REQUIRED, STRING, NULL, NOT_SET }
 };
 
 struct payload cmdBindAwk = {

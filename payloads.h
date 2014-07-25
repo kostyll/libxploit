@@ -6,7 +6,7 @@
 #define PAYLOADS_NUMBER 7
 #define PAYLOAD_NAME_LENGTH 128
 
-extern struct Xploit;
+struct Xploit;
 
 struct payloadParam {
     char name[PAYLOAD_NAME_LENGTH];

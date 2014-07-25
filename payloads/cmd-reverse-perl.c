@@ -14,8 +14,8 @@ void cmdReversePerlHelp()
 
 // payload's options
 struct payloadParam cmdReversePerlOpts[MAX_NUM_OF_PARAMS] = {
-    { "LHOST", REQUIRED, STRING, NOT_SET, NULL, NOT_SET },
-    { "LPORT", REQUIRED, STRING, NOT_SET, NULL, NOT_SET }
+    { "LHOST", REQUIRED, STRING, NULL, NOT_SET },
+    { "LPORT", REQUIRED, STRING, NULL, NOT_SET }
     //TODO: INTERNAL param random file name
 };
 

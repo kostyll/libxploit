@@ -17,8 +17,8 @@ void execShellcodeHelp()
 
 // shellcode's options
 struct payloadParam execOptions[MAX_NUM_OF_PARAMS] = {
-    { "CMD-LENGTH", INTERNAL, STRING, NOT_SET, NULL, NOT_SET },
-    { "CMD", REQUIRED, STRING, NOT_SET, NULL, NOT_SET }
+    { "CMD-LENGTH", INTERNAL, STRING, NULL, NOT_SET },
+    { "CMD", REQUIRED, STRING, NULL, NOT_SET }
 };
 
 // shellcode's initialization
