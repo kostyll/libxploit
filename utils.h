@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define LIBXPLOIT_DEBUG 0
+
 // collection of common defines/utilities used here and there
 
 #define XPLOIT_OK 0
@@ -44,6 +46,7 @@ enum {
 };
 
 void printMsg(int level, const char * format, ...);
+void debugMsg(const char * format, ...);
 
 // asm opcodes library 
 
