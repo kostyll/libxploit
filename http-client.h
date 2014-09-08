@@ -1,7 +1,7 @@
 #ifndef __HTTP_CLIENT_H__
 #define __HTTP_CLIENT_H__
 
-//TODO: tiny synchronous http library
+#define MAXLINE 4096
 
 typedef enum {
     ERROR = -1,

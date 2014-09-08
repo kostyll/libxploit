@@ -7,6 +7,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
+#include <errno.h>
 
 #include "http-client.h"
 
@@ -56,15 +58,110 @@ static int readLine(int fd, char *buf, int max)
     return n;
 }
 
-static int readBuffer(int fd, char *buffer, int len) 
+static int readBuffer(int fd, void *buffer, size_t len)
 {
-    int n, r;
-    for (n = 0; n < len; n += r) {
-        r=read(fd, buffer, len-n);
-        if (r <= 0) return -n;
-        buffer += r;
+    size_t nleft;
+    int nread;
+    char *ptr;
+
+    ptr = buffer;
+    nleft = len;
+    while(nleft > 0) {
+        if((nread = write(fd, ptr, nleft)) <= 0) {
+            if(nread < 0 && errno == EINTR)
+                nread = 0;
+            else
+                return -1;
+        }
+
+        nleft -= nread;
+        ptr += nread;
     }
+
+    return len;
+}
+
+static int readCrlf(int fd)
+{
+    char buf[2];
+    int n;
+    n = readBuffer(fd, buf, 2);
+
     return n;
+}
+
+int writeBuffer(int fd, void *buffer, size_t len)
+{
+    size_t nleft;
+    int nwritten;
+    char *ptr;
+
+    ptr = buffer;
+    nleft = len;
+    while(nleft > 0) {
+        if((nwritten = write(fd, ptr, nleft)) <= 0) {
+            if(nwritten < 0 && errno == EINTR)
+                nwritten = 0;
+            else
+                return -1;
+        }
+
+        nleft -= nwritten;
+        ptr += nwritten;
+    }
+
+    return len;
+}
+
+char *readChunks(int fd, size_t *len)
+{
+    size_t total = 0;
+    char *data = NULL;
+
+    *len = 0;
+
+    int i;
+    for(;;) {
+        char chunkline[MAXLINE];
+        int n;
+        size_t chunksize;
+
+        printf("=== iter: %d ===\n", i++);
+        n = readLine(fd, chunkline, sizeof(chunkline) - 1);
+        printf("po readline\n");
+        if(n < 0) {
+            if(data)
+                free(data);
+            return NULL;
+        }
+        chunkline[n] = '\0';
+        printf("n: %d\n", n);
+        printf("chunkline: %s\n", chunkline);
+
+        sscanf(chunkline, "%x", &chunksize); 
+        printf("chunksize: %d\n", chunksize);
+
+        if(chunksize == 0) // no more chunks
+            break;
+
+        if(data == NULL) {
+            data = (char *)malloc(chunksize);
+        }
+        else {
+            // TODO: precheck chunksize + total against overflow
+            data = (char *)realloc(data, chunksize + total);
+        }
+        if(data == NULL)
+            return NULL;
+
+        readBuffer(fd, data + total, chunksize);
+        total += chunksize;
+
+        readCrlf(fd);
+    }
+
+    *len = total;
+    return data;
 }
 
 static int getResponse(int fd, char **response)
@@ -115,6 +212,12 @@ static int getResponse(int fd, char **response)
     // chunked transfer
     else if(strcmp(transferEnc, "chunked") == 0) {
         printf("chunked transfer\n");
+        size_t len;
+        *response = readChunks(fd, &len);
+        if(*response == NULL) {
+            return -1;
+        }
+        printf("content len: %d\n", len);
     }
 
     printf("content: %s\n", *response);
@@ -162,12 +265,6 @@ int httpUriEncode(char *uri, char **uriEncoded)
     return 0;
 }
 
-/*
- * simplest case:
- * GET uri HTTP/1.0
- * User-Agent: jakisciec
- */
-
 HTTP_RESPONSE_CODE httpGETRequest(char *ip, int port, char *uri, char **responseBody, char *vhost)
 {
     HTTP_RESPONSE_CODE ret;
@@ -200,11 +297,14 @@ HTTP_RESPONSE_CODE httpGETRequest(char *ip, int port, char *uri, char **response
     else
         host = vhost;
 
+
     // 2) prepare rest of fields
     memset(header, '\0', len);
     snprintf(header, len, "GET %s HTTP/1.1\015\012"
                           "Host: %s\015\012"
-                          "User-Agent: libxploit\015\012"
+                          "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\015\012"
+                          "Connection: Close\015\012"
+                          "Content-Length: 0\015\012"
                           "\015\012",
                            uri, host);
     if(!vhost)
@@ -213,7 +313,7 @@ HTTP_RESPONSE_CODE httpGETRequest(char *ip, int port, char *uri, char **response
     // calculate real length
     len = strlen(header);
 
-    if(write(s, header, len) != len) {
+    if(writeBuffer(s, header, len) != len) {
         // TODO: http lib error: failed to write header
         fprintf(stderr, "http lib error: failed to write header\n");
         free(header);
