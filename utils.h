@@ -35,6 +35,16 @@ struct details {
     enum EXPLOIT_TYPE exploitType;
 };
 
+// output messages from modules 
+enum {
+    LOG_INFO,
+    LOG_WARN,
+    LOG_ERROR,
+    LOG_FATAL,
+};
+
+void printMsg(int level, const char * format, ...);
+
 // asm opcodes library 
 
 // function for random filenames

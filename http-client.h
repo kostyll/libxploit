@@ -5,7 +5,9 @@
 
 typedef enum {
     ERROR = -1,
-    ERROR400 = 400
+    HTTP200 = 200,
+    HTTP400 = 400,
+    HTTP401 = 401,
 } HTTP_RESPONSE_CODE;
 
 HTTP_RESPONSE_CODE httpHEADRequest();
