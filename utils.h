@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define LIBXPLOIT_DEBUG 0
-
 // collection of common defines/utilities used here and there
 
 #define XPLOIT_OK 0
@@ -17,6 +15,8 @@
 
 #define MAX_NUM_OF_PARAMS 8
 #define NOT_SET 0
+
+extern int debugMode();
 
 // bash colors
 static const char *txtrst="\e[0m";

@@ -5,15 +5,28 @@
 
 #include "xploit.h"
 
-int xploitInitialize()
+static unsigned int globalBitmask;
+
+int xploitInitialize(unsigned int bitmask)
 {
     payloadsInit();
     exploitsInit();
 
+    globalBitmask = bitmask;
+
     return 1;
 }
 
-// TODO: move all above to utils.c
+int debugMode()
+{
+    if(globalBitmask & XPLOIT_GLOBAL_DEBUG) {
+        return 1;
+    }
+
+    return 0;
+}
+
+// TODO: move all below to utils.c
 
 /* simplest header for x86 elf */
 unsigned char tinyElf[] = {

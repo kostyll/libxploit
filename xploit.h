@@ -5,7 +5,10 @@
 #include "payloads.h"
 #include "exploits.h"
 
-int xploitInitialize();
+#define XPLOIT_GLOBAL_DEBUG 0x00000001
+#define XPLOIT_GLOBAL_ALL 0xffffffff
+
+int xploitInitialize(unsigned int bitmask);
 
 /*** information gathering ***/
 enum LINUX_DISTRO {Unrecognized, Debian, Ubuntu, RedHat};
