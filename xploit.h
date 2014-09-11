@@ -8,7 +8,10 @@
 #define XPLOIT_GLOBAL_DEBUG 0x00000001
 #define XPLOIT_GLOBAL_ALL 0xffffffff
 
+#define XPLOIT_ERROR_SIZE 256
+
 int xploitInitialize(unsigned int bitmask);
+const char *xploitStrerror();
 
 /*** information gathering ***/
 enum LINUX_DISTRO {Unrecognized, Debian, Ubuntu, RedHat};

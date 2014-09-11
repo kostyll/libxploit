@@ -153,6 +153,7 @@ int main(int argc, char **argv)
 
     // init libxploit
     if(xploitInitialize(XPLOIT_GLOBAL_DEBUG) == -1) {
+        fprintf(stderr, "%s", xploitStrerror());
         return 1;
     }
 
@@ -162,8 +163,7 @@ int main(int argc, char **argv)
     if(pick_exploit) {
         struct Xploit *xploit = xploitUseExploit(pick_exploit); 
         if(xploit == NULL) {
-            // get lib erro
-            printf("no such exploit found\n");
+            fprintf(stderr, "%s\n", xploitStrerror());
             return 1;
         }
 

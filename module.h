@@ -5,6 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define XPLOIT_NO_ERROR 0x0
+#define XPLOIT_UNRECOGNIZED_EXPLOIT_ERROR 0x1
+#define XPLOIT_UNRECOGNIZED_PAYLOAD_ERROR 0x2
+
+extern int exploitErrCode;
+
 enum PLATFORM { LINUX, BSD, CMD };
 enum ARCH { X86, X64, PHP };
 

@@ -6,15 +6,29 @@
 #include "xploit.h"
 
 static unsigned int globalBitmask;
+int exploitErrCode = 0;
 
 int xploitInitialize(unsigned int bitmask)
 {
     payloadsInit();
     exploitsInit();
 
+    exploitErrCode = XPLOIT_NO_ERROR;
     globalBitmask = bitmask;
 
     return 1;
+}
+
+const char *xploitStrerror()
+{
+    switch (exploitErrCode) {
+        case XPLOIT_NO_ERROR:
+            return "No error";
+        case XPLOIT_UNRECOGNIZED_EXPLOIT_ERROR:
+            return "Unrecognized exploit selected";
+        default:
+            return "Unrecognized error";
+    }
 }
 
 int debugMode()
