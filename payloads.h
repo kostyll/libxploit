@@ -1,6 +1,7 @@
 #ifndef _PAYLOADS_H_
 #define _PAYLOADS_H_
 
+#include "module.h" 
 #include "utils.h" 
 
 #define PAYLOADS_NUMBER 7

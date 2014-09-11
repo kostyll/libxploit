@@ -1,5 +1,7 @@
 #include <stdarg.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "utils.h"
 
 void printMsg(int level, const char * format, ...)
