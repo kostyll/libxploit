@@ -9,6 +9,7 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <netinet/tcp.h>
 
 #include "http-client.h"
 
@@ -19,6 +20,7 @@ static int makeConnection(char *ip, int port)
     int s;
     struct hostent *hp;
     struct sockaddr_in server;
+    struct timeval timeout;
 
     if (hp = gethostbyname(ip)) {
         memset((char *) &server,0, sizeof(server));
@@ -31,7 +33,10 @@ static int makeConnection(char *ip, int port)
 
     if ((s = socket(AF_INET, SOCK_STREAM, 0)) < 0)
         return -1;
-    setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, 0, 0);
+    //setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, 0, 0);
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 900000;
+    setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (struct timeval *)&timeout, sizeof(struct timeval));
 
     if (connect(s, &server, sizeof(server)) < 0)
         return -1;
@@ -67,7 +72,7 @@ static int readBuffer(int fd, void *buffer, size_t len)
     ptr = buffer;
     nleft = len;
     while(nleft > 0) {
-        if((nread = write(fd, ptr, nleft)) <= 0) {
+        if((nread = read(fd, ptr, nleft)) <= 0) {
             if(nread < 0 && errno == EINTR)
                 nread = 0;
             else
@@ -126,22 +131,25 @@ char *readChunks(int fd, size_t *len)
         int n;
         size_t chunksize;
 
-        printf("=== iter: %d ===\n", i++);
         n = readLine(fd, chunkline, sizeof(chunkline) - 1);
-        printf("po readline\n");
+
+        // error while reading data
         if(n < 0) {
             if(data)
                 free(data);
             return NULL;
         }
+
+        // no more data on socket
+        if(n == 0)
+            break;
+
         chunkline[n] = '\0';
-        printf("n: %d\n", n);
-        printf("chunkline: %s\n", chunkline);
 
         sscanf(chunkline, "%x", &chunksize); 
-        printf("chunksize: %d\n", chunksize);
 
-        if(chunksize == 0) // no more chunks
+        // last chunk
+        if(chunksize == 0) 
             break;
 
         if(data == NULL) {
@@ -219,8 +227,6 @@ static int getResponse(int fd, char **response)
         }
         printf("content len: %d\n", len);
     }
-
-    printf("content: %s\n", *response);
 
     return retCode;
 }
