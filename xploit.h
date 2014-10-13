@@ -5,7 +5,8 @@
 #include "payloads.h"
 #include "exploits.h"
 
-#define XPLOIT_GLOBAL_DEBUG 0x00000001
+#define XPLOIT_GLOBAL_INIT 0x00000001
+#define XPLOIT_GLOBAL_DEBUG 0x00000002
 #define XPLOIT_GLOBAL_ALL 0xffffffff
 
 #define XPLOIT_ERROR_SIZE 256

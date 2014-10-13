@@ -152,7 +152,7 @@ int main(int argc, char **argv)
     int i;
 
     // init libxploit
-    if(xploitInitialize(XPLOIT_GLOBAL_DEBUG) == -1) {
+    if(xploitInitialize(XPLOIT_GLOBAL_INIT | XPLOIT_GLOBAL_DEBUG) == -1) {
         fprintf(stderr, "%s", xploitStrerror());
         return 1;
     }

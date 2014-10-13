@@ -14,7 +14,12 @@ int xploitInitialize(unsigned int bitmask)
     exploitsInit();
 
     exploitErrCode = XPLOIT_NO_ERROR;
+
+    // set flags passed by user
     globalBitmask = bitmask;
+
+    // set library as initialized
+    globalBitmask |= XPLOIT_GLOBAL_INIT;
 
     return 1;
 }
@@ -26,6 +31,10 @@ const char *xploitStrerror()
             return "No error";
         case XPLOIT_UNRECOGNIZED_EXPLOIT_ERROR:
             return "Unrecognized exploit selected";
+        case XPLOIT_UNRECOGNIZED_PAYLOAD_ERROR:
+            return "Unrecognized payload selected";
+        case XPLOIT_INIT_ERROR:
+            return "Failed to initilize library";
         default:
             return "Unrecognized error";
     }
