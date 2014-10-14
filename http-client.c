@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <netdb.h>
 #include <ctype.h>
+#include <limits.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -156,7 +157,8 @@ char *readChunks(int fd, size_t *len)
             data = (char *)malloc(chunksize);
         }
         else {
-            // TODO: precheck chunksize + total against overflow
+	    if(UINT_MAX - chunksize < total)
+		return NULL;
             data = (char *)realloc(data, chunksize + total);
         }
         if(data == NULL)
